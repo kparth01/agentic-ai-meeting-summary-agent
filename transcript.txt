@@ -1,0 +1,47 @@
+Alex:
+Good catch. Let’s make sure that’s resolved before release freeze. Speaking of which, are we comfortable with the timeline?
+
+Mei:
+If we freeze features by the 25th, I can complete regression testing before release.
+
+Priya:
+Works for me. Once the merge conflict is resolved, backend changes will be stable.
+
+Daniel:
+I’ll need one code review for the UI refactor. It’s a bit large.
+
+Alex:
+Priya, can you review Daniel’s PR?
+
+Priya:
+Yes, I’ll do that today.
+
+Rahul:
+For deployment, I’ll prepare the production checklist and rollback plan. No surprises this time.
+
+Daniel:
+Famous last words.
+
+Mei:
+Please no surprises. QA appreciates boring releases.
+
+Alex:
+Same here. Predictable is beautiful.
+
+Alex:
+Any blockers we haven’t discussed?
+
+Priya:
+None from backend after the merge fix.
+
+Daniel:
+Just the responsive UI tweaks.
+
+Mei:
+Waiting for the freeze to start full regression.
+
+Rahul:
+Monitoring infra and optimizing staging performance.
+
+Alex:
+Perfect. Let’s aim for clean merges by Wednesday and release readiness review in the next meeting. Thanks everyone.
