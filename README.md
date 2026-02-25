@@ -1,5 +1,3 @@
-nisargkadam23@gmail.com
-
 ## Prerequisites
 
 - Python 3.12
