@@ -16,22 +16,31 @@
 
 ## Project Structure
 
+```text
 meeting-summary-assistant/
 ├── .env.example
 ├── README.md
 ├── agents/
-│ ├── actionAgent.py›
-│ ├── combineAgent.py
-│ ├── summaryAgent.py
-│ └── supervisorAgent.py
+│   ├── actionAgent.py
+│   ├── combineAgent.py
+│   ├── summaryAgent.py
+│   └── supervisorAgent.py
 ├── config.py
 ├── formatter.py
 ├── graph.py
-├── helloWorld.py (sample standalone project)
+├── helloWorld.py       # sample standalone project
 ├── main.py
 ├── requirements.txt
 ├── state.py
-└── transcript.txtÍ
+└── transcript.txt
+```
+
+- **`agents/`** – core agent modules; each implements a different role/task.
+- **`config.py`**, **`state.py`**, **`formatter.py`**, **`graph.py`** – shared utilities and configuration.
+- **`main.py`** – entry point orchestrating the agents.
+- **`.env.example`** – environment variable template.
+- **`requirements.txt`** – Python dependencies.
+- **`transcript.txt`** – sample input data.
 
 ## Working example
 

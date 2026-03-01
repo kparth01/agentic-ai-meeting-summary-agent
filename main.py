@@ -13,7 +13,7 @@ if __name__ == "__main__":
     transcript = ""
 
     if not user_input or user_input.lower() == "exit":
-        sys.exit("No input provided. Exiting the program...")
+        (sys.exit("No input provided. Exiting the program..."))
 
     # /Users/parthkansara/Projects/AITrainingsNisarg/AgenticAIProjects/LangGraphPOC/transcript.txt
     script_dir = os.path.dirname(os.path.abspath(__file__))
