@@ -28,7 +28,6 @@ meeting-summary-assistant/
 ├── config.py
 ├── formatter.py
 ├── graph.py
-├── helloWorld.py       # sample standalone project
 ├── main.py
 ├── requirements.txt
 ├── state.py
