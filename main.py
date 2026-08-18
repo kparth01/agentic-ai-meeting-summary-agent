@@ -1,12 +1,10 @@
 import os
 import sys
-from langchain_core.messages import HumanMessage
-from graph import app
-import tools as tools_module
+from graph import graph
 
 if __name__ == "__main__":
     print("\n" + "=" * 60)
-    print("Meeting Summary Agent  (ReAct)")
+    print("Meeting Summary Agent")
     print("=" * 60)
 
     user_input = input("How can I help you today? (type 'exit' to quit): ").strip()
@@ -20,14 +18,12 @@ if __name__ == "__main__":
     if os.path.exists(transcript_file):
         with open(transcript_file, "r", encoding="utf-8") as fh:
             transcript = fh.read().strip()
-        tools_module.set_transcript(transcript)
         print("Loaded transcript.\n")
     else:
         print("Warning: transcript.txt not found.\n")
 
-    result = app.invoke({"messages": [HumanMessage(content=user_input)]})
+    final = graph.invoke({ "user_input": user_input })
 
-    final = result["messages"][-1].content
     print("\n" + "=" * 60)
     print(final)
     print("\n" + "=" * 60)

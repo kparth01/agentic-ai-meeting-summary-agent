@@ -1,8 +1,7 @@
-from state import AgentState
-from config import Config
 
-class SupervisorAgent(Config):
-    
+
+class Orchestrator:
+
     SYSTEM_PROMPT = """
         You are a meeting supervisor agent. You will oversee the meeting transcript and plan the next steps based on users intention.
 
@@ -31,7 +30,11 @@ class SupervisorAgent(Config):
         }}
     """
 
-    def oversee(self, user_input: str, transcript: str) -> dict:
-        llm_input : str = self.SYSTEM_PROMPT + " " + "User Input: {user_input} Transcript: {transcript}".format(user_input=user_input, transcript=transcript)
-        return self.chain_prompt(llm_input, "supervisor_agent")
-        
+    def __init__(self) -> None:
+        pass
+
+
+    def find_intent(self):
+        pass
+
+    
