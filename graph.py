@@ -37,7 +37,7 @@ def summary_and_action_node(state: AgentState):
     transcript = state["transcript"]
     generated_summary = summary_agent.process(transcript=transcript)
     generated_actions = action_agent.process(transcript=transcript)
-    result = f"Summary: {generated_summary} Actions: {generated_actions}"
+    result = f"Summary: {generated_summary} Actions: {json.dumps(generated_actions)}"
     return { "summary_and_action": result }
 
 
