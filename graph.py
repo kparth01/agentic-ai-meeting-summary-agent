@@ -1,4 +1,3 @@
-import json
 from langgraph.graph import StateGraph, START, END
 from supervisor.state import AgentState
 
@@ -37,7 +36,7 @@ def summary_and_action_node(state: AgentState):
     transcript = state["transcript"]
     generated_summary = summary_agent.process(transcript=transcript)
     generated_actions = action_agent.process(transcript=transcript)
-    result = f"Summary: {generated_summary} Actions: {json.dumps(generated_actions)}"
+    result = f"Summary: {generated_summary} Actions: {generated_actions}"
     return { "summary_and_action": result }
 
 
@@ -57,7 +56,7 @@ def aggregator_node(state: AgentState):
     if intent == "summary_items":
         final_input = f"SUMMARY ONLY (do not include action items):\n{state['summary']}"
     elif intent == "action_items":
-        final_input = f"ACTION ITEMS ONLY (do not include summary):\n{json.dumps(state['action'])}"
+        final_input = f"ACTION ITEMS ONLY (do not include summary):\n{state['action']}"
     elif intent == "summary_and_action_items":
         final_input = state["summary_and_action"]
 

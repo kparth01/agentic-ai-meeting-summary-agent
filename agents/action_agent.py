@@ -1,5 +1,4 @@
 from llm.llm_call import LLMCall
-import json
 
 class ActionAgent():
 
@@ -29,8 +28,8 @@ class ActionAgent():
     def __init__(self) -> None:
         self.llm = LLMCall()
 
-    def process(self, transcript: str) -> dict:
-        resp = self.llm.query_llm(system_msg=self.SYSTEM_PROMPT, 
-                                  human_msg=transcript)        
+    def process(self, transcript: str) -> str:
+        resp = self.llm.query_llm(system_msg=self.SYSTEM_PROMPT,
+                                  human_msg=transcript)
 
-        return json.loads(resp) 
+        return str(resp) 

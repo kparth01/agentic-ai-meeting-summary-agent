@@ -33,8 +33,8 @@ class Aggregator():
     def __init__(self) -> None:
         self.llm = LLMCall()
 
-    def print(self, input_data: str) -> dict: 
+    def print(self, input_data: str) -> str:
         resp = self.llm.query_llm(system_msg=self.SYSTEM_PROMPT, human_msg=input_data)
-        return json.loads(resp)
+        return str(resp)
         
         

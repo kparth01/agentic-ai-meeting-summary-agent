@@ -4,15 +4,9 @@ class OutputFormatter:
     """Formats and displays meeting summary and action items in a readable way."""
     
     @staticmethod
-    def format_output(combine_result: dict) -> None:
-        """
-        Parse the combine agent output and display it formatted.
-        
-        Args:
-            combine_result: JSON string from combine agent
-        """
+    def format_output(combine_result: str) -> None:
         try:
-            data = combine_result
+            data = json.loads(combine_result)
             output = data.get("final_aggregated_output", {})
             
             # Display Summary
