@@ -1,13 +1,13 @@
-from config import Config
+from llm.llm_call import LLMCall
 
-class ActionAgent(Config):
+class ActionAgent():
 
     SYSTEM_PROMPT = """
         You are a meeting action items agent. You will extract action items from
         the minutes of meeting.
 
         ROLE:
-        1. Analyze the meeting transcript given by user in "User Input".
+        1. Analyze the meeting transcript given by user.
         2. Validate its in English Language.
         3. Generate action items for each individual that needs to take action.
 
@@ -25,8 +25,11 @@ class ActionAgent(Config):
         }}
     """
 
-    def process(self, transcript: str) -> dict:
-        return self.chain_prompt(self.SYSTEM_PROMPT + " User Input: " + transcript, "action_items")
-        
+    def __init__(self) -> None:
+        self.llm = LLMCall()
 
-        
+    def process(self, transcript: str) -> str:
+        resp = self.llm.query_llm(system_msg=self.SYSTEM_PROMPT,
+                                  human_msg=transcript)
+
+        return str(resp) 

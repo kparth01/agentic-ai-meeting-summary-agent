@@ -5,12 +5,6 @@ class OutputFormatter:
     
     @staticmethod
     def format_output(combine_result: str) -> None:
-        """
-        Parse the combine agent output and display it formatted.
-        
-        Args:
-            combine_result: JSON string from combine agent
-        """
         try:
             data = json.loads(combine_result)
             output = data.get("final_aggregated_output", {})

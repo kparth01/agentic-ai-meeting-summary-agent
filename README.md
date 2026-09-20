@@ -48,3 +48,29 @@ meeting-summary-assistant/
 ## License
 
 [MIT](./LICENSE) License © 2026-PRESENT [Parth Kansara](https://github.com/kparth01)
+
+
+
+## Create Python env:
+`python3 -m venv .venv`
+
+Activate:
+`.venv\Scripts\activate`
+
+## Install Graphify:
+Go to terminal install graphifyy:
+`pip install --upgrade graphifyy`
+
+Link the skill to VSCode. It will create a .github folder:
+`graphify vscode install` 
+
+Without API Key use these commands to create graph for code only:
+`graphify extract . --code-only`
+
+To generate GRAPH_REPORT.md and name communities
+`graphify cluster-only /Users/parth.kansara/Projects/AIProjects/MeetingSummaryAgent/agentic-ai-meeting-summary-agent` 
+
+Verify if you workspace have graphifyy installed:
+`graphify query`
+Oupput:
+`Usage: graphify query "<question>" [--dfs] [--context C] [--budget N] [--graph path]`

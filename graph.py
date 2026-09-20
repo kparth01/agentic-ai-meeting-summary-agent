@@ -1,49 +1,95 @@
-import os
-from langgraph.graph import StateGraph, START, END, MessagesState
-from langgraph.prebuilt import ToolNode, tools_condition
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage
-from dotenv import load_dotenv
+from langgraph.graph import StateGraph, START, END
+from supervisor.state import AgentState
 
-load_dotenv()
+from supervisor.orchestrator import Orchestrator
+from agents.summary_agent import SummaryAgent
+from agents.action_agent import ActionAgent
+from supervisor.aggregator import Aggregator
+from formatter import OutputFormatter
 
-from tools import summarize_meeting, extract_action_items
+orchestrator = Orchestrator()
+summary_agent = SummaryAgent()
+action_agent = ActionAgent()
+aggregator = Aggregator()
+output_formatter = OutputFormatter
 
-TOOLS = [summarize_meeting, extract_action_items]
-
-llm = ChatOpenAI(
-    model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-    temperature=0,
-    openai_api_key=os.getenv("OPENAI_API_KEY"),
-).bind_tools(TOOLS)
-
-SYSTEM_PROMPT = """You are a meeting assistant with two tools:
-- summarize_meeting: generates a concise summary of the meeting
-- extract_action_items: extracts action items and their owners
-
-Call the appropriate tool(s) based on what the user asks for, then present the results clearly."""
+def orchestrator_node(state: AgentState):
+    user_input = state["user_input"]
+    raw = orchestrator.find_intent(user_input=user_input)
+    intent = raw.strip().strip('"')
+    return { "intent": intent }
 
 
-def call_model(state: MessagesState) -> dict:
-    messages = [SystemMessage(content=SYSTEM_PROMPT)] + state["messages"]
-    response = llm.invoke(messages)
-    return {"messages": [response]}
+def summary_node(state: AgentState):
+    transcript = state["transcript"]
+    generated_summary = summary_agent.process(transcript=transcript)
+    return { "summary": generated_summary }
 
 
-tool_node = ToolNode(TOOLS)
+def action_node(state: AgentState):
+    transcript = state["transcript"]
+    generated_actions = action_agent.process(transcript=transcript)
+    return { "action": generated_actions }
 
 
-def create_workflow():
-    builder = StateGraph(MessagesState)
-
-    builder.add_node("agent", call_model)
-    builder.add_node("tools", tool_node)
-
-    builder.add_edge(START, "agent")
-    builder.add_conditional_edges("agent", tools_condition)
-    builder.add_edge("tools", "agent")
-
-    return builder.compile()
+def summary_and_action_node(state: AgentState):
+    transcript = state["transcript"]
+    generated_summary = summary_agent.process(transcript=transcript)
+    generated_actions = action_agent.process(transcript=transcript)
+    result = f"Summary: {generated_summary} Actions: {generated_actions}"
+    return { "summary_and_action": result }
 
 
-app = create_workflow()
+def route_intent(state: AgentState) -> str:
+    intent = state["intent"]
+    if intent == "summary_items":
+        return "summary"
+    elif intent == "action_items":
+        return "action"
+    elif intent == "summary_and_action_items":
+        return "summary_and_action" 
+
+
+def aggregator_node(state: AgentState):
+    intent = state["intent"]
+    final_input = ""
+    if intent == "summary_items":
+        final_input = f"SUMMARY ONLY (do not include action items):\n{state['summary']}"
+    elif intent == "action_items":
+        final_input = f"ACTION ITEMS ONLY (do not include summary):\n{state['action']}"
+    elif intent == "summary_and_action_items":
+        final_input = state["summary_and_action"]
+
+    result = aggregator.print(input_data=final_input)
+    return { "final_response": result }
+
+
+
+def create_graph():
+    graph = StateGraph(AgentState)
+
+    graph.add_node("orchestrator", orchestrator_node)
+    graph.add_node("summary", summary_node)
+    graph.add_node("action", action_node)
+    graph.add_node("summary_and_action", summary_and_action_node)
+    graph.add_node("aggregator", aggregator_node)
+
+    graph.add_edge(START, "orchestrator")
+    graph.add_conditional_edges(
+        "orchestrator",         
+        route_intent,            
+        {
+            "summary": "summary",
+            "action":  "action",
+            "summary_and_action": "summary_and_action"
+        }
+    )
+    graph.add_edge("summary", "aggregator")
+    graph.add_edge("action", "aggregator")
+    graph.add_edge("summary_and_action", "aggregator")
+
+    graph.add_edge("aggregator", END)
+
+    return graph.compile()
+
+graph = create_graph()
