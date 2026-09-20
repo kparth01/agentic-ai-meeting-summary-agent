@@ -4,13 +4,17 @@ from supervisor.state import AgentState
 from supervisor.orchestrator import Orchestrator
 from agents.summary_agent import SummaryAgent
 from agents.action_agent import ActionAgent
+from agents.sentiment_agent import SentimentAgent
 from supervisor.aggregator import Aggregator
 from formatter import OutputFormatter
 
 orchestrator = Orchestrator()
 summary_agent = SummaryAgent()
 action_agent = ActionAgent()
+sentiment_agent = SentimentAgent()
 aggregator = Aggregator()
+
+
 output_formatter = OutputFormatter
 
 def orchestrator_node(state: AgentState):
@@ -40,6 +44,16 @@ def summary_and_action_node(state: AgentState):
     return { "summary_and_action": result }
 
 
+def sentiment_node(state: AgentState):
+    transcript = state["transcript"]
+    response = sentiment_agent.process(transcript=transcript)
+    return { "sentiment": response }
+
+
+def unknown_node(state: AgentState):
+    response = "Apologies I cannot help with this request!!"
+    return { "unknown": response }
+
 def route_intent(state: AgentState) -> str:
     intent = state["intent"]
     if intent == "summary_items":
@@ -48,6 +62,10 @@ def route_intent(state: AgentState) -> str:
         return "action"
     elif intent == "summary_and_action_items":
         return "summary_and_action" 
+    elif intent == "sentiment":
+        return "sentiment"
+    else:
+        return "unknown"
 
 
 def aggregator_node(state: AgentState):
@@ -59,6 +77,10 @@ def aggregator_node(state: AgentState):
         final_input = f"ACTION ITEMS ONLY (do not include summary):\n{state['action']}"
     elif intent == "summary_and_action_items":
         final_input = state["summary_and_action"]
+    elif intent == "sentiment":
+        final_input = state["sentiment"]
+    elif intent == "unknown":
+        final_input = state["unknown"]
 
     result = aggregator.print(input_data=final_input)
     return { "final_response": result }
@@ -72,6 +94,8 @@ def create_graph():
     graph.add_node("summary", summary_node)
     graph.add_node("action", action_node)
     graph.add_node("summary_and_action", summary_and_action_node)
+    graph.add_node("sentiment", sentiment_node)
+    graph.add_node("unknown", unknown_node)
     graph.add_node("aggregator", aggregator_node)
 
     graph.add_edge(START, "orchestrator")
@@ -81,13 +105,16 @@ def create_graph():
         {
             "summary": "summary",
             "action":  "action",
-            "summary_and_action": "summary_and_action"
+            "summary_and_action": "summary_and_action",
+            "sentiment": "sentiment",
+            "unknown": "unknown"
         }
     )
     graph.add_edge("summary", "aggregator")
     graph.add_edge("action", "aggregator")
+    graph.add_edge("sentiment", "aggregator")
     graph.add_edge("summary_and_action", "aggregator")
-
+    graph.add_edge("unknown", "aggregator")
     graph.add_edge("aggregator", END)
 
     return graph.compile()

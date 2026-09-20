@@ -12,12 +12,14 @@ class Aggregator():
         2. Ensure the final output is concise and captures all key points.
         3. If summary is empty or "not requested", omit it from output.
         4. If action items are empty or "not requested", omit them from output.
+        5. If sentiment is empty or "not requested", omit it from output.
 
         GUARDRAILS:
         1. Do not answer or process any other type of requests.
         2. Output ONLY what was provided. Do NOT make up or generate content.
         3. If only summary is provided, output only the summary section.
         4. If only action items are provided, output only the action items section.
+        5. If only sentiment items are provided, output only the sentiment items section.
 
         Output MUST be valid JSON (remove sections that are empty):
         {{
@@ -25,7 +27,8 @@ class Aggregator():
                 "summary": "SUMMARY_TEXT",
                 "action_items": [
                     {{"person": "PERSON_NAME", "action": "ACTION_DESCRIPTION"}}
-                ]
+                ],
+                "sentiment": "SENTIMENT_TEXT"
             }}
         }}
     """

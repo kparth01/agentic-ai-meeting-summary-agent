@@ -7,4 +7,6 @@ class AgentState(TypedDict):
     action: str
     transcript: str
     summary_and_action: str
+    sentiment: str
+    unknown: str
     final_response: dict
