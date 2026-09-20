@@ -15,6 +15,14 @@ class OutputFormatter:
                 print("MEETING SUMMARY")
                 print("=" * 60)
                 print(f"\n{output['summary']}\n")
+
+
+            # Display Sentiment
+            if "sentiment" in output and output["sentiment"]:
+                print("\n" + "=" * 60)
+                print("SENTIMENT ANALYSIS")
+                print("=" * 60)
+                print(f"\n{output['sentiment']}\n")
             
             # Display Action Items
             if "action_items" in output and output["action_items"]:
